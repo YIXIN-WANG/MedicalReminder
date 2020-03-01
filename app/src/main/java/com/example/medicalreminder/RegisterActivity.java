@@ -88,10 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
-                            Intent homeIntent = new Intent(RegisterActivity.this, HomeActivity.class);
-                            homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(homeIntent);
+                            Helper.goToHomeView(RegisterActivity.this);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -102,5 +99,15 @@ public class RegisterActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null) {
+            Helper.goToHomeView(RegisterActivity.this);
+        }
     }
 }
