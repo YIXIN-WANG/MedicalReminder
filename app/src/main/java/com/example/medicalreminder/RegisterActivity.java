@@ -14,16 +14,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.medicalreminder.model.User;
+import com.example.medicalreminder.utils.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private TextView textViewLogin;
-    private EditText editTextEmail, editTextPassword;
+    private EditText editTextEmail, editTextPassword, editTextCareEmail;
     private Button registerButton;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
@@ -37,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         textViewLogin = findViewById(R.id.text_view_login);
         editTextEmail = findViewById(R.id.edit_text_email);
+        editTextCareEmail = findViewById(R.id.edit_text_care_email);
         editTextPassword = findViewById(R.id.edit_text_password);
         registerButton = findViewById(R.id.button_register);
         progressBar = findViewById(R.id.progressbar);
@@ -46,6 +52,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = editTextEmail.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
+                String careEmail = editTextCareEmail.getText().toString().trim();
+
 
                 if (email.isEmpty()) {
                     editTextEmail.setError("Email Required");
@@ -65,7 +73,19 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                registerUser(email, password);
+                if (careEmail.isEmpty()) {
+                    editTextCareEmail.setError("Email Required");
+                    editTextCareEmail.requestFocus();
+                    return;
+                }
+
+                if (!Patterns.EMAIL_ADDRESS.matcher(careEmail).matches()) {
+                    editTextCareEmail.setError("Valid Email Required");
+                    editTextCareEmail.requestFocus();
+                    return;
+                }
+
+                registerUser(email, password, careEmail);
             }
         });
 
@@ -79,7 +99,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(String email, String password){
+
+    private void registerUser(final String email, String password, final String careEmail){
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -88,7 +109,22 @@ public class RegisterActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
-                            Helper.goToHomeView(RegisterActivity.this);
+                            User user = new User(email, careEmail);
+                            FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid())
+                                    .setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Helper.goToHomeView(RegisterActivity.this);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                    Log.e("db", e.getMessage());
+                                }
+                            });
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
