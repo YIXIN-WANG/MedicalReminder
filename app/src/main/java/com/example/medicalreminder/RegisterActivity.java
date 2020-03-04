@@ -23,7 +23,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import static com.example.medicalreminder.utils.Helper.getCurrentTimeStamp;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -109,7 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
-                            User user = new User(email, careEmail);
+                            User user = new User(email, careEmail, getCurrentTimeStamp());
                             FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid())
                                     .setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -137,13 +143,33 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    /*
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null) {
-            Helper.goToHomeView(RegisterActivity.this);
+            Query query = FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid());
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user =  dataSnapshot.getValue(User.class);
+                    if(Helper.checkValidSession(RegisterActivity.this, user.getLoginTime())){
+                        Helper.goToHomeView(RegisterActivity.this);
+                    }
+                    else{
+                        Toast.makeText(RegisterActivity.this, "Your session is expired, Please login again!", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("Retrieve user: ",databaseError.getMessage());
+                }
+            });
+
         }
     }
+     */
 }
