@@ -4,6 +4,8 @@ public class User {
     private String email;
     private String careGiverEmail;
 
+    public User(){}
+
     public User(String email, String careGiverEmail) {
         this.email = email;
         this.careGiverEmail = careGiverEmail;
