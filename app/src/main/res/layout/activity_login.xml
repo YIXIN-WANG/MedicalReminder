@@ -47,7 +47,7 @@
 
                 <TextView
                     android:labelFor="@id/edit_text_email"
-                    android:text="email"
+                    android:text="id/email"
                     android:fontFamily="sans-serif-light"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -60,7 +60,7 @@
                     android:drawablePadding="10dp"
                     android:singleLine="true"
                     android:layout_marginBottom="10dp"
-                    android:hint="john@gmail.com"
+                    android:hint="123/john@gmail.com"
                     android:inputType="textEmailAddress"/>
 
                 <TextView
