@@ -34,7 +34,7 @@ import static com.example.medicalreminder.utils.Helper.getCurrentTimeStamp;
 public class RegisterActivity extends AppCompatActivity {
 
     private TextView textViewLogin;
-    private EditText editTextEmail, editTextPassword, editTextCareEmail;
+    private EditText editTextEmail, editTextPassword, editTextCareEmail, editOhipNumber;
     private Button registerButton;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
@@ -50,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.edit_text_email);
         editTextCareEmail = findViewById(R.id.edit_text_care_email);
         editTextPassword = findViewById(R.id.edit_text_password);
+        editOhipNumber = findViewById(R.id.edit_ohip_number);
         registerButton = findViewById(R.id.button_register);
         progressBar = findViewById(R.id.progressbar);
 
@@ -59,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = editTextEmail.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
                 String careEmail = editTextCareEmail.getText().toString().trim();
-
+                String ohipNumber = editOhipNumber.getText().toString().trim();
 
                 if (email.isEmpty()) {
                     editTextEmail.setError("Email Required");
@@ -91,7 +92,13 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                registerUser(email, password, careEmail);
+                if(ohipNumber.length() != 12){
+                    editOhipNumber.setError("Valid OHIP Number required");
+                    editOhipNumber.requestFocus();
+                    return;
+                }
+
+                registerUser(email, password, careEmail, ohipNumber);
             }
         });
 
@@ -106,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    private void registerUser(final String email, String password, final String careEmail){
+    private void registerUser(final String email, String password, final String careEmail, final String ohipNumber){
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -115,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
-                            User user = new User(email, careEmail, getCurrentTimeStamp());
+                            User user = new User(email, careEmail, getCurrentTimeStamp(), ohipNumber);
                             FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid())
                                     .setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -142,34 +149,4 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    /*
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null) {
-            Query query = FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid());
-            query.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User user =  dataSnapshot.getValue(User.class);
-                    if(Helper.checkValidSession(RegisterActivity.this, user.getLoginTime())){
-                        Helper.goToHomeView(RegisterActivity.this);
-                    }
-                    else{
-                        Toast.makeText(RegisterActivity.this, "Your session is expired, Please login again!", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e("Retrieve user: ",databaseError.getMessage());
-                }
-            });
-
-        }
-    }
-     */
 }

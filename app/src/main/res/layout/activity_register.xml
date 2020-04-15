@@ -93,9 +93,27 @@
                     android:drawableLeft="@drawable/ic_email"
                     android:drawablePadding="10dp"
                     android:singleLine="true"
-                    android:layout_marginBottom="10dp"
                     android:hint="David@gmail.com"
                     android:inputType="textEmailAddress"/>
+
+                <TextView
+                    android:labelFor="@id/edit_ohip_number"
+                    android:text="OHIP Number"
+                    android:fontFamily="sans-serif-light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:id="@+id/edit_ohip_number"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_local_hospital_black_24dp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="10dp"
+                    android:hint="558-448-6674"
+                    android:inputType="text"/>
 
 
                 <Button

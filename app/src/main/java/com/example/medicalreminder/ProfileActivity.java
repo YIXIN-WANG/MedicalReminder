@@ -26,7 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private EditText careEmail;
-    private TextView email;
+    private TextView email, ohipNumber;
     private ProgressBar progressBar;
     private Button saveButton;
     private User currentUser;
@@ -38,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         careEmail = findViewById(R.id.edit_text_care_email);
         email = findViewById(R.id.text_email);
+        ohipNumber = findViewById(R.id.text_ohip_number);
         progressBar = findViewById(R.id.progressbar);
         saveButton = findViewById(R.id.button_save);
 
@@ -48,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 currentUser =  dataSnapshot.getValue(User.class);
                 email.setText(currentUser.getEmail());
+                ohipNumber.setText(currentUser.getOhipNumber());
                 careEmail.setText(currentUser.getCareGiverEmail());
             }
 

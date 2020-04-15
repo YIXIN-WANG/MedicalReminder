@@ -3,14 +3,24 @@ package com.example.medicalreminder.model;
 public class User {
     private String email;
     private String careGiverEmail;
+    private String ohipNumber;
     private long loginTime;
 
     public User(){}
 
-    public User(String email, String careGiverEmail, long loginTime) {
+    public User(String email, String careGiverEmail, long loginTime, String ohipNumber) {
         this.email = email;
         this.careGiverEmail = careGiverEmail;
         this.loginTime = loginTime;
+        this.ohipNumber = ohipNumber;
+    }
+
+    public String getOhipNumber() {
+        return ohipNumber;
+    }
+
+    public void setOhipNumber(String ohipNumber) {
+        this.ohipNumber = ohipNumber;
     }
 
     public long getLoginTime() {

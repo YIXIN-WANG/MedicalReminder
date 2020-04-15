@@ -38,6 +38,25 @@
             android:drawableLeft="@drawable/ic_email"
             tools:text="probelalkhan@gmail.com"
             android:id="@+id/text_email"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="OHIP Number"
+            android:fontFamily="sans-serif-light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:layout_gravity="top"
+            android:drawablePadding="16dp"
+            android:drawableLeft="@drawable/ic_local_hospital_black_24dp"
+            android:drawableTint="@color/colorPrimary"
+            tools:text="123-456-7890"
+            android:id="@+id/text_ohip_number"
+            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
