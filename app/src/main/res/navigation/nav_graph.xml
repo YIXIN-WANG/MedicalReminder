@@ -8,11 +8,16 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.medicalreminder.HomeFragment"
-        android:label="Home"
+        android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.medicalreminder.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        android:id="@+id/medicationFragment"
+        android:name="com.example.medicalreminder.MedicationFragment"
+        android:label="fragment_medication"
+        tools:layout="@layout/fragment_medication" />
+    <fragment
+        android:id="@+id/clinicFragment"
+        android:name="com.example.medicalreminder.ClinicFragment"
+        android:label="fragment_clinic"
+        tools:layout="@layout/fragment_clinic" />
 </navigation>

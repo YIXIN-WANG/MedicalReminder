@@ -1,16 +1,11 @@
 package com.example.medicalreminder;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -23,18 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ProfileFragment extends Fragment {
+public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private EditText careEmail;
@@ -43,26 +31,15 @@ public class ProfileFragment extends Fragment {
     private Button saveButton;
     private User currentUser;
 
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
         auth = FirebaseAuth.getInstance();
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
-        careEmail = view.findViewById(R.id.edit_text_care_email);
-        email = view.findViewById(R.id.text_email);
-        progressBar = view.findViewById(R.id.progressbar);
-        saveButton = view.findViewById(R.id.button_save);
+        careEmail = findViewById(R.id.edit_text_care_email);
+        email = findViewById(R.id.text_email);
+        progressBar = findViewById(R.id.progressbar);
+        saveButton = findViewById(R.id.button_save);
 
         final Query query = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
 
@@ -94,22 +71,23 @@ public class ProfileFragment extends Fragment {
                             progressBar.setVisibility(View.GONE);
                             if(task.isSuccessful()){
                                 careEmail.setText(currentUser.getCareGiverEmail());
-                                Toast.makeText(getContext(), "Update Successfully!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProfileActivity.this, "Update Successfully!", Toast.LENGTH_LONG).show();
                                 Log.d("Update Profile", "Success");
                             }
                             else{
-                                Toast.makeText(getContext(), "Update Failed!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProfileActivity.this, "Update Failed!", Toast.LENGTH_LONG).show();
                                 Log.e("Update Profile: ",task.getException().getMessage());
                             }
                         }
                     });
                 }
                 else{
-                    Toast.makeText(getContext(), "Email already updated!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "Email already updated!", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
-        super.onViewCreated(view, savedInstanceState);
     }
+
+
 }
