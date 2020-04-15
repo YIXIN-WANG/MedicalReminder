@@ -24,4 +24,3 @@ public class ExampleInstrumentedTest {
 
         assertEquals("com.example.medicalreminder", appContext.getPackageName());
     }
-}
