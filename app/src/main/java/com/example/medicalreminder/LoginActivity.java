@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.medicalreminder.model.User;
+import com.example.medicalreminder.utils.DataInitialization;
 import com.example.medicalreminder.utils.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -71,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
                     editTextPassword.requestFocus();
                     return;
                 }
-
                 loginUser(email, password);
             }
         });
