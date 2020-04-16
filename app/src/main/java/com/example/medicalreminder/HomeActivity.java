@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.CalendarView;
 
 import com.example.medicalreminder.utils.Helper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -29,6 +30,11 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+//        CalendarView calendarView = findViewById(R.id.calendarView2);
+//        long currentTime = System.currentTimeMillis();
+//        long maxTime = currentTime + 1000 * 60 * 60 * 24 * 7;
+//        calendarView.setMinDate(currentTime);
+//        calendarView.setMaxDate(maxTime);
     }
 
 
