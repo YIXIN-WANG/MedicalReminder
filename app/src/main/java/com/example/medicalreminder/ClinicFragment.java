@@ -1,5 +1,7 @@
 package com.example.medicalreminder;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -78,11 +80,16 @@ public class ClinicFragment extends Fragment implements ClinicItemListAdapter.On
 
     @Override
     public void onOpenDirectionClick(Clinic clinic) {
-
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q="+clinic.getAddress());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 
     @Override
     public void onOpenPhoneClick(Clinic clinic) {
-
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:"+clinic.getPhoneNumber()));
+        startActivity(intent);
     }
 }
