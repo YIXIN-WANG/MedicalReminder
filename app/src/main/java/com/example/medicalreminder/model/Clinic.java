@@ -3,6 +3,8 @@ package com.example.medicalreminder.model;
 public class Clinic {
     private String zipCode, address, name, phoneNumber, apiEndpoint, clinicId;
 
+    public Clinic(){}
+
     public Clinic(String clinicId, String zipCode, String address, String name, String phoneNumber, String apiEndpoint) {
         this.clinicId = clinicId;
         this.zipCode = zipCode;

@@ -5,6 +5,8 @@ public class Medicine {
     private int quantity, refillsRemaining;
     private long expiryDate;
 
+    public Medicine(){}
+
     public Medicine(String medicineId, String name, String prescriptionNumber, String direction, String doctorName, String userId, String clinicId, int quantity, int refillsRemaining, long expiryDate) {
         this.medicineId = medicineId;
         this.name = name;

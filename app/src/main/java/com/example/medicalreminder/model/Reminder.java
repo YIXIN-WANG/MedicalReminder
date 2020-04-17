@@ -5,6 +5,8 @@ public class Reminder {
     private String medicineId, userId, reminderId;
     private boolean takenMed;
 
+    public Reminder(){}
+
     public Reminder(String reminderId, long scheduleTime, long takeTime, String medicineId, String userId, boolean takenMed) {
         this.reminderId = reminderId;
         this.scheduleTime = scheduleTime;
