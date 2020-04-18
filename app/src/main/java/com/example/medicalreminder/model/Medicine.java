@@ -2,12 +2,14 @@ package com.example.medicalreminder.model;
 
 public class Medicine {
     private String name, prescriptionNumber, direction, doctorName, userId, clinicId, medicineId;
-    private int quantity, refillsRemaining;
+    private int quantity;
+    private int refillsRemaining;
+    private int takeInterval;
     private long expiryDate;
 
     public Medicine(){}
 
-    public Medicine(String medicineId, String name, String prescriptionNumber, String direction, String doctorName, String userId, String clinicId, int quantity, int refillsRemaining, long expiryDate) {
+    public Medicine(String medicineId, String name, String prescriptionNumber, String direction, String doctorName, String userId, String clinicId, int quantity, int refillsRemaining, long expiryDate, int takeInterval) {
         this.medicineId = medicineId;
         this.name = name;
         this.prescriptionNumber = prescriptionNumber;
@@ -18,6 +20,7 @@ public class Medicine {
         this.quantity = quantity;
         this.refillsRemaining = refillsRemaining;
         this.expiryDate = expiryDate;
+        this.takeInterval = takeInterval;
     }
 
     public String getMedicineId() {
@@ -98,5 +101,13 @@ public class Medicine {
 
     public void setExpiryDate(long expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public int getTakeInterval() {
+        return takeInterval;
+    }
+
+    public void setTakeInterval(int takeInterval) {
+        this.takeInterval = takeInterval;
     }
 }

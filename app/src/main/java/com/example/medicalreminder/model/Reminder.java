@@ -3,19 +3,21 @@ package com.example.medicalreminder.model;
 public class Reminder {
     private long scheduleTime, takeTime;
     private String medicineId, userId, reminderId;
+
+    private long sequence;
     private boolean takenMed;
 
     public Reminder(){}
 
-    public Reminder(String reminderId, long scheduleTime, long takeTime, String medicineId, String userId, boolean takenMed) {
+    public Reminder(String reminderId, long scheduleTime, long takeTime, String medicineId, String userId, boolean takenMed, long sequence) {
         this.reminderId = reminderId;
         this.scheduleTime = scheduleTime;
         this.takeTime = takeTime;
         this.medicineId = medicineId;
         this.userId = userId;
         this.takenMed = takenMed;
+        this.sequence = sequence;
     }
-
 
     public String getReminderId() {
         return reminderId;
@@ -63,5 +65,13 @@ public class Reminder {
 
     public void setTakenMed(boolean takenMed) {
         this.takenMed = takenMed;
+    }
+
+    public long getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(long sequence) {
+        this.sequence = sequence;
     }
 }
