@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
+
     <!-- TODO: Update blank fragment layout -->
-
-    <LinearLayout
+    <com.github.techisfun.onelinecalendar.OneLineCalendarView
+        android:id="@+id/calendar_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fafafa"
-        android:orientation="vertical">
+        android:layout_height="70dp"
+        android:theme="@style/CalendarTheme">
 
-        <com.github.techisfun.onelinecalendar.OneLineCalendarView
-            android:id="@+id/calendar_view"
+    </com.github.techisfun.onelinecalendar.OneLineCalendarView>
+
+    <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:theme="@style/CalendarTheme">
+            android:layout_height="match_parent"
+        android:id="@+id/home_recycleView"/>
 
-        </com.github.techisfun.onelinecalendar.OneLineCalendarView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>
