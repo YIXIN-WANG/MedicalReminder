@@ -30,11 +30,6 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-//        CalendarView calendarView = findViewById(R.id.calendarView2);
-//        long currentTime = System.currentTimeMillis();
-//        long maxTime = currentTime + 1000 * 60 * 60 * 24 * 7;
-//        calendarView.setMinDate(currentTime);
-//        calendarView.setMaxDate(maxTime);
     }
 
 
