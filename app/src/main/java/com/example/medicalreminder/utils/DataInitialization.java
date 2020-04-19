@@ -2,6 +2,11 @@ package com.example.medicalreminder.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import android.util.Log;
@@ -18,7 +23,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class DataInitialization {
 
-    public static void initClinics(){
+    public static void initData(String userId){
+        String clinic_id = initClinics();
+        String medId = initMedicine(clinic_id, userId);
+        initReminder(userId, medId);
+    }
+
+    private static String initClinics(){
         DatabaseReference clinicRef = FirebaseDatabase.getInstance().getReference("Clinics");
         String id_1 = clinicRef.push().getKey();
         String id_2 = clinicRef.push().getKey();
@@ -31,6 +42,7 @@ public class DataInitialization {
 
         setClinic(clinicRef, clinic1);
         setClinic(clinicRef, clinic2);
+        return id_1;
     }
 
     private static void setClinic(DatabaseReference dbRef, final Clinic clinic){
@@ -48,33 +60,29 @@ public class DataInitialization {
         });
     }
 
-    public static void initMedicine(){
+    private static String initMedicine(String clinicId, String userId){
         DatabaseReference medRef = FirebaseDatabase.getInstance().getReference("Medicine");
         String id_1 = medRef.push().getKey();
+        String id_2 = medRef.push().getKey();
 
-        String medName = "Trandolapril";
-        String prescNum = "98761234";
-        String direct = "One pill a day with or without food.";
-        String docName = "Dr. John Doe";
-        String userID = "4eitjJEqPgVz37A7YPIMwouc8FC3";
-        String clinicID = "-M548ZnT0FUlZDuqgYgv";
-        int quantity = 1;
-        int refillsRemaining = 0;
-        long expiryDate = 0L;
-        String string_date = "12-December-2021";
-        int takeInterval = 6;
-        SimpleDateFormat f = new SimpleDateFormat("dd-MMM-yyyy");
         try {
-            Date d = f.parse(string_date);
-            expiryDate = d.getTime();
+            long expiryDate1 = (new SimpleDateFormat("yyyy-MM-dd").parse("2021-12-20")).getTime();
+            long expiryDate2 = (new SimpleDateFormat("yyyy-MM-dd").parse("2019-10-23")).getTime();
+            Medicine med1 = new Medicine(id_1, "Trandolapril", "7660502", "Take one Capsule by mouse daily with 8 oz glass of water"
+                    ,"John Doe", userId, clinicId,
+                    30, 10,expiryDate1, 6);
+
+            Medicine med2 = new Medicine(id_2, "Trandolapril", "7616492", "Take one Capsule by mouse daily with 8 oz glass of water"
+                    ,"Ethan Walker", userId, clinicId,
+                    30, 5,expiryDate2, 6);
+
+            setMedicine(medRef,med1);
+            setMedicine(medRef,med2);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        Medicine med1 = new Medicine(id_1, medName, prescNum, direct,docName,userID,clinicID,
-                quantity, refillsRemaining,expiryDate, takeInterval);
-
-        setMedicine(medRef,med1);
+        return id_1;
     }
 
     private static void setMedicine(DatabaseReference dbRef, final Medicine med){
@@ -92,32 +100,24 @@ public class DataInitialization {
         });
     }
 
-    public static void initReminder(){
+    private static void initReminder(String userId, String medicineId){
         DatabaseReference remRef = FirebaseDatabase.getInstance().getReference("Reminder");
-        String id_1 = remRef.push().getKey();
-
-        String reminderID = id_1;
-        String userID = "4eitjJEqPgVz37A7YPIMwouc8FC3";
-        String medicineID = "";
-        long scheduleTime = 0L;
-        long takeTime = 0L;
-        long sequence = 0L;
-        boolean takenMed = false;
-
-        String string_date_schedule = "2020/04/18 21:00:00";
-
-        SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        try {
-            Date d = f.parse(string_date_schedule);
-            scheduleTime = d.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        LocalDateTime today = LocalDateTime.now();
+        for(int i = 0; i < 5; i++){
+            String id1 = remRef.push().getKey();
+            String id2 = remRef.push().getKey();
+            LocalDateTime t1 = today.plusDays(i).withHour(10).withMinute(0).withSecond(0);
+            LocalDateTime t2 = today.plusDays(i).withHour(16).withMinute(0).withSecond(0);
+            long scheduleTime1 = ZonedDateTime.of(t1, ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long scheduleTime2 = ZonedDateTime.of(t2, ZoneId.systemDefault()).toInstant().toEpochMilli();
+            Reminder rem1 = new Reminder(id1, scheduleTime1, 0L, medicineId, userId,
+                    false, 1);
+            Reminder rem2 = new Reminder(id2, scheduleTime2, 0L, medicineId, userId,
+                    false, 2);
+            setReminder(remRef, rem1);
+            setReminder(remRef, rem2);
         }
 
-        Reminder rem1 = new Reminder(reminderID, scheduleTime, takeTime, medicineID, userID,
-                takenMed, sequence);
-
-        setReminder(remRef, rem1);
     }
     private static void setReminder(DatabaseReference dbRef, final Reminder rem){
         dbRef.child(rem.getReminderId())

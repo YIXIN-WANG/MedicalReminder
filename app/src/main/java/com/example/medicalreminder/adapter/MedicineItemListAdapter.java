@@ -61,6 +61,7 @@ public class MedicineItemListAdapter extends RecyclerView.Adapter<MedicineItemLi
         holder.medDirectionTextView.setText(medicineItem.getDirection());
         holder.medQuantityTextView.setText(String.valueOf(medicineItem.getQuantity())+" tablets");
         holder.medRefillTextView.setText(medicineItem.getRefillsRemaining() + " of 12");
+        holder.medDoctorTextView.setText(medicineItem.getDoctorName());
 
         dbClinicRef.child(medicineItem.getClinicId()).addValueEventListener(new ValueEventListener() {
             @Override
