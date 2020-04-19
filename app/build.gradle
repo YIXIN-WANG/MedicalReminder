@@ -43,6 +43,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
     implementation 'com.github.techisfun:onelinecalendar:0.9'
 
-    implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.5'
-    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-messaging:20.1.5'
+   // implementation 'com.google.firebase:firebase-analytics:17.3.0'
 }

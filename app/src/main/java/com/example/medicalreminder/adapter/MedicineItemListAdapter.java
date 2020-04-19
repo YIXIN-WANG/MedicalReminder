@@ -1,6 +1,7 @@
 package com.example.medicalreminder.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,12 @@ public class MedicineItemListAdapter extends RecyclerView.Adapter<MedicineItemLi
         final Medicine medicineItem = medicineList.get(position);
 
         holder.medNameTextView.setText(medicineItem.getName());
-        holder.medExpiryDateTextView.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date(medicineItem.getExpiryDate())));
+        Date expiryDate = new Date(medicineItem.getExpiryDate());
+        holder.medExpiryDateTextView.setText(new SimpleDateFormat("yyyy-MM-dd").format(expiryDate));
+        if(expiryDate.before(new Date())){
+            holder.medExpiryDateTextView.setTextColor(Color.RED);
+        }
+
         holder.medPrescriptionNumber.setText(medicineItem.getPrescriptionNumber());
         holder.medDirectionTextView.setText(medicineItem.getDirection());
         holder.medQuantityTextView.setText(String.valueOf(medicineItem.getQuantity())+" tablets");
