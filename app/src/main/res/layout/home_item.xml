@@ -12,60 +12,84 @@
     android:focusable="true"
     android:checkable="true"
     android:clickable="true">
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/pillImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:src="@drawable/blister"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@null"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <LinearLayout
-            android:id="@+id/infoList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_toEndOf="@+id/pillImage"
-            android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@+id/pillImage">
-            <!-- Title, secondary and supporting text -->
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
             <TextView
-                android:id="@+id/medTitle"
+                android:id="@+id/medNameTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Medication"
+                android:text="Placebo"
+                android:layout_weight = "1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorPrimary"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:layout_margin="8dp"/>
 
             <TextView
-                android:id="@+id/medName"
+                android:id="@+id/timeMedSchedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#FFFFFF"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Medication Name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="?android:attr/textColorSecondary" />
-
-            <TextView
-                android:id="@+id/medInstructions"
+                android:gravity="right"
+                android:clickable="true"
+                android:textSize="24dp"
+                tools:text="21:00" />
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/pillImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:tint="@color/colorPrimary"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_add_alert_black_24dp" />
+            <LinearLayout
+                android:id="@+id/infoList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto"
-                android:text="Instructions"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="?android:attr/textColorSecondary" />
-        </LinearLayout>
-    </RelativeLayout>
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/pillImage"
+                android:layout_toRightOf="@+id/pillImage"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <!-- Title, secondary and supporting text -->
+                <TextView
+                    android:id="@+id/instructionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="1 Unit per Day"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="?android:attr/textColorSecondary" />
+
+                <TextView
+                    android:id="@+id/medTakenTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Pill taken at 21:00"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
 </androidx.cardview.widget.CardView>
