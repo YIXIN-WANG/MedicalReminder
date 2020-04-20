@@ -13,19 +13,42 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.medicalreminder.HomeActivity;
+import com.example.medicalreminder.ProfileActivity;
 import com.example.medicalreminder.R;
+import com.example.medicalreminder.model.Reminder;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    public static final String INFO_UPDATE = "info_update";
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
@@ -57,15 +80,73 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //
 //        }
 
+
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            UpdateReminderTime();
             sendNotification(remoteMessage.getNotification().getBody());
         }
 
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+    }
+
+    private void UpdateReminderTime(){
+        long startOfSelectDate = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long endOfSelectDate = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Query query  = FirebaseDatabase.getInstance().getReference("Reminder").orderByChild("scheduleTime").startAt(startOfSelectDate).endAt(endOfSelectDate);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Reminder> reminders = new ArrayList<>();
+                for(DataSnapshot clinicSnapshot : dataSnapshot.getChildren()){
+                    Reminder rem = clinicSnapshot.getValue(Reminder.class);
+                    if(!rem.isTakenMed()){
+                        reminders.add(rem);
+                    }
+                }
+                if(reminders.size() > 0){
+                    Reminder reminder = reminders.remove(0);
+                    reminder.setTakeTime(System.currentTimeMillis());
+                    reminder.setTakenMed(true);
+
+                    if(reminders.size() > 0){
+                        Reminder nextReminder = reminders.get(0);
+                        //todo: change hour to 6: hard code for testing
+                        LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextReminder.getScheduleTime()), ZoneId.systemDefault()).plusHours(2);
+                        nextReminder.setScheduleTime(ZonedDateTime.of(newScheduleTime, ZoneId.systemDefault()).toInstant().toEpochMilli());
+                        setReminderValue(nextReminder);
+                    }
+                    setReminderValue(reminder);
+                    query.removeEventListener(this);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Retrieve Clinics Error:",databaseError.getMessage());
+            }
+        });
+    }
+
+    private void setReminderValue(Reminder reminder){
+        FirebaseDatabase.getInstance().getReference("Reminder").child(reminder.getReminderId())
+                .setValue(reminder).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.d("Taken med ", "Success");
+                    Intent i = new Intent(INFO_UPDATE);
+                    i.putExtra(INFO_UPDATE, reminder);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+                }
+                else{
+                    Log.e("Taken med ",task.getException().getMessage());
+                }
+            }
+        });
     }
 
     private void sendNotification(String messageBody) {
@@ -78,7 +159,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.pill)
+                        .setSmallIcon(R.drawable.ic_add_alert_black_24dp)
                         .setContentTitle("Smart-box Notification")
                         .setContentText(messageBody)
                         .setAutoCancel(true)
@@ -92,11 +173,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        NotificationManagerCompat notificationManagerCom = NotificationManagerCompat.from(this);
+        notificationManagerCom.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
 }

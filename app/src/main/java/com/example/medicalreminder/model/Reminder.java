@@ -1,6 +1,8 @@
 package com.example.medicalreminder.model;
 
-public class Reminder {
+import java.io.Serializable;
+
+public class Reminder implements Serializable {
     private long scheduleTime, takeTime;
     private String medicineId, userId, reminderId;
 

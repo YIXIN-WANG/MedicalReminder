@@ -23,6 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class HomeItemListAdapter extends RecyclerView.Adapter<HomeItemListAdapter.HomeListViewHolder> {
@@ -52,13 +56,21 @@ public class HomeItemListAdapter extends RecyclerView.Adapter<HomeItemListAdapte
     public void onBindViewHolder(@NonNull HomeListViewHolder holder, int position) {
         final int itemPosition = position;
         final Reminder remItem = remList.get(position);
+        if(remItem.isTakenMed()){
+            Instant instant = Instant.ofEpochMilli(remItem.getTakeTime());
+            LocalDateTime takenTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+            String histTime = "Taken at "+takenTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd 'at' hh:mm a"));
+            holder.medTakenTime.setText(histTime);
+            holder.medTakenTime.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.medTakenTime.setVisibility(View.INVISIBLE);
+        }
 
-        String histTime = "Taken at continue next at UNKNOWN";
         Long timeHist = remItem.getScheduleTime();
         DateFormat formatter = new SimpleDateFormat("HH:mm");
         String timeFormated = formatter.format(timeHist);
         holder.timeMedSchedule.setText(timeFormated);
-        holder.medTakenTime.setText(histTime);
 
         Query q1 = medRef.child(remItem.getMedicineId());
         q1.addValueEventListener(new ValueEventListener() {
