@@ -25,7 +25,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-        <receiver android:name=".MyNotificationPublisher" />
+        <receiver android:name=".NotificationPublisher" />
 
         <service android:name=".service.MyFirebaseMessagingService"
             android:exported="false">
