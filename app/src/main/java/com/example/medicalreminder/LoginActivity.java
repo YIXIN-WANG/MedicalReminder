@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseDatabase.getInstance().getReference("Users").child(mAuth.getCurrentUser().getUid())
                                     .child("loginTime").setValue(Helper.getCurrentTimeStamp());
+                            //DataInitialization.initData(mAuth.getCurrentUser().getUid());
                             Helper.goToHomeView(LoginActivity.this);
 
                         } else {
