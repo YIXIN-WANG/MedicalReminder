@@ -1,7 +1,5 @@
 package com.example.medicalreminder;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
@@ -16,8 +14,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +29,7 @@ import android.widget.TimePicker;
 import com.example.medicalreminder.adapter.HomeItemListAdapter;
 import com.example.medicalreminder.model.Reminder;
 import com.example.medicalreminder.service.MyFirebaseMessagingService;
+import com.example.medicalreminder.service.NotificationServices;
 import com.github.techisfun.onelinecalendar.DateSelectionListener;
 import com.github.techisfun.onelinecalendar.OneLineCalendarView;
 import com.google.firebase.database.DataSnapshot;
@@ -42,9 +39,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +60,8 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
     private HomeItemListAdapter homeItemListAdapter;
     private DatabaseReference dbRemRef;
     private TimePicker picker;
-
+    private Context mContext;
+    private NotificationServices ns;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -87,10 +87,11 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragView = inflater.inflate(R.layout.fragment_home, container, false);
+        this.mContext = getActivity();
+        this.ns = new NotificationServices(mContext);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setTitle("Home");
 
-        sendNotification("blal");
-
+        ns.scheduleNotification(ns.getNotification("test"), 5000);
         OneLineCalendarView calendarView = (OneLineCalendarView) fragView.findViewById(R.id.calendar_view);
         recyclerView = fragView.findViewById(R.id.home_recycleView);
 
@@ -100,8 +101,6 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         dbRemRef = FirebaseDatabase.getInstance().getReference("Reminder");
-
-
 
         calendarView.setOnDateClickListener(new DateSelectionListener() {
             @Override
@@ -137,43 +136,30 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
         });
         return fragView;
     }
+
     @Override
     public void onOpenTextClick(Reminder rem) {
-//        picker=(TimePicker)frag.findViewById(R.id.timePicker1);
-//        picker.setIs24HourView(true);
+        // TODO Auto-generated method stub
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                Date date = new Date(rem.getScheduleTime());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.set(Calendar.MINUTE, selectedMinute);
+                calendar.set(Calendar.HOUR, selectedHour);
+                rem.setScheduleTime(calendar.getTimeInMillis());
+                homeItemListAdapter.notifyDataSetChanged();
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
     }
 
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(getContext(), HomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        String channelId = "Notification";
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(getContext(), channelId)
-                        .setSmallIcon(R.drawable.ic_add_alert_black_24dp)
-                        .setContentTitle("Smart-box Notification")
-                        .setContentText(messageBody)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        NotificationManagerCompat notificationManagerCom = NotificationManagerCompat.from(getContext());
-        notificationManagerCom.notify(0 /* ID of notification */, notificationBuilder.build());
-    }
 
 }
 
