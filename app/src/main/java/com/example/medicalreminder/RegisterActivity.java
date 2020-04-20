@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.medicalreminder.model.User;
+import com.example.medicalreminder.utils.DataInitialization;
 import com.example.medicalreminder.utils.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -127,6 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     .setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    DataInitialization.initData(mAuth.getCurrentUser().getUid());
                                     Helper.goToHomeView(RegisterActivity.this);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {

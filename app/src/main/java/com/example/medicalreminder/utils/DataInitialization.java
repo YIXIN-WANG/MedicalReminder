@@ -103,7 +103,7 @@ public class DataInitialization {
     private static void initReminder(String userId, String medicineId){
         DatabaseReference remRef = FirebaseDatabase.getInstance().getReference("Reminder");
         LocalDateTime today = LocalDateTime.now();
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 8; i++){
             String id1 = remRef.push().getKey();
             String id2 = remRef.push().getKey();
             LocalDateTime t1 = today.plusDays(i).withHour(10).withMinute(0).withSecond(0);

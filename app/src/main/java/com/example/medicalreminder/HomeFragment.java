@@ -88,10 +88,10 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
         // Inflate the layout for this fragment
         fragView = inflater.inflate(R.layout.fragment_home, container, false);
         this.mContext = getActivity();
-        this.ns = new NotificationServices(mContext);
+        //this.ns = new NotificationServices(mContext);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setTitle("Home");
 
-        ns.scheduleNotification(ns.getNotification("test"), 5000);
+        //ns.scheduleNotification(ns.getNotification("test"), 5000);
         OneLineCalendarView calendarView = (OneLineCalendarView) fragView.findViewById(R.id.calendar_view);
         recyclerView = fragView.findViewById(R.id.home_recycleView);
 
@@ -140,24 +140,26 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
     @Override
     public void onOpenTextClick(Reminder rem) {
         // TODO Auto-generated method stub
-        Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                Date date = new Date(rem.getScheduleTime());
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                calendar.set(Calendar.MINUTE, selectedMinute);
-                calendar.set(Calendar.HOUR, selectedHour);
-                rem.setScheduleTime(calendar.getTimeInMillis());
-                homeItemListAdapter.notifyDataSetChanged();
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
+        if(!rem.isTakenMed()){
+            Calendar mcurrentTime = Calendar.getInstance();
+            int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+            int minute = mcurrentTime.get(Calendar.MINUTE);
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    Date date = new Date(rem.getScheduleTime());
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    calendar.set(Calendar.MINUTE, selectedMinute);
+                    calendar.set(Calendar.HOUR, selectedHour);
+                    rem.setScheduleTime(calendar.getTimeInMillis());
+                    homeItemListAdapter.notifyDataSetChanged();
+                }
+            }, hour, minute, true);//Yes 24 hour time
+            mTimePicker.setTitle("Select Time");
+            mTimePicker.show();
+        }
     }
 
 

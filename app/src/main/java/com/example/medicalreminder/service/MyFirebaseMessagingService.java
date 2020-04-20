@@ -114,8 +114,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     if(reminders.size() > 0){
                         Reminder nextReminder = reminders.get(0);
-                        //todo: change hour to 6: hard code for testing
-                        LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextReminder.getScheduleTime()), ZoneId.systemDefault()).plusHours(2);
+                        LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextReminder.getScheduleTime()), ZoneId.systemDefault()).plusHours(6);
                         nextReminder.setScheduleTime(ZonedDateTime.of(newScheduleTime, ZoneId.systemDefault()).toInstant().toEpochMilli());
                         setReminderValue(nextReminder);
                     }
