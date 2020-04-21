@@ -17,6 +17,7 @@ import com.example.medicalreminder.adapter.ClinicItemListAdapter;
 import com.example.medicalreminder.adapter.MedicineItemListAdapter;
 import com.example.medicalreminder.model.Clinic;
 import com.example.medicalreminder.model.Medicine;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +34,7 @@ public class MedicationFragment extends Fragment {
     private RecyclerView recyclerView;
     private MedicineItemListAdapter medicineItemListAdapter;
     private DatabaseReference dbMedRef;
+    private FirebaseAuth auth;
 
     public MedicationFragment() {
         // Required empty public constructor
@@ -43,7 +45,7 @@ public class MedicationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_medication, container, false);
-
+        auth = FirebaseAuth.getInstance();
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setTitle("Medication");
         recyclerView = view.findViewById(R.id.medicine_recycleView);
 
@@ -59,7 +61,10 @@ public class MedicationFragment extends Fragment {
                 medicineList.clear();
                 for(DataSnapshot clinicSnapshot : dataSnapshot.getChildren()){
                     Medicine medicine = clinicSnapshot.getValue(Medicine.class);
-                    medicineList.add(medicine);
+                    if(medicine.getUserId().equals(auth.getCurrentUser().getUid())){
+                        medicineList.add(medicine);
+                    }
+
                 }
                 medicineItemListAdapter.notifyDataSetChanged();
             }

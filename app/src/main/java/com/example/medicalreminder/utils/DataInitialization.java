@@ -20,15 +20,35 @@ import com.example.medicalreminder.model.Reminder;
 import com.example.medicalreminder.service.NotificationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class DataInitialization {
 
     public static void initData(String userId, Context context){
-        String clinic_id = initClinics();
-        String medId = initMedicine(clinic_id, userId);
-        initReminder(userId, medId, context);
+        //String clinic_id = initClinics();
+        DatabaseReference dbClinicRef = FirebaseDatabase.getInstance().getReference("Clinics");
+        dbClinicRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot clinicSnapshot : dataSnapshot.getChildren()){
+                    Clinic clinic = clinicSnapshot.getValue(Clinic.class);
+                    if(clinic.getPhoneNumber().equals("519-725-1514")){
+                        String medId = initMedicine(clinic.getClinicId(), userId);
+                        initReminder(userId, medId, context);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Retrieve Clinics Error:",databaseError.getMessage());
+            }
+        });
+
     }
 
     private static String initClinics(){
