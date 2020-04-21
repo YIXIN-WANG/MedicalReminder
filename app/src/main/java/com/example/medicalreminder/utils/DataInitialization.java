@@ -109,9 +109,9 @@ public class DataInitialization {
             LocalDateTime t1 = today.plusDays(i).withHour(10).withMinute(0).withSecond(0);
             LocalDateTime t2 = today.plusDays(i).withHour(16).withMinute(0).withSecond(0);
             if(i == 0){
-                t1 = today;
-                t2 = today.plusHours(6);
-                //todo: Schedule notification here, 2 mins after now.
+                t1 = today.plusMinutes(2);
+                t2 = t1.plusHours(6);
+                //todo: Schedule notification here, use t1.
             }
             long scheduleTime1 = ZonedDateTime.of(t1, ZoneId.systemDefault()).toInstant().toEpochMilli();
             long scheduleTime2 = ZonedDateTime.of(t2, ZoneId.systemDefault()).toInstant().toEpochMilli();
