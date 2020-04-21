@@ -36,7 +36,7 @@ public class NotificationServices {
 
     public Notification getNotification (String content) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, NotificationPublisher.NOTIFICATION_CHANNEL_ID);
-        builder.setContentTitle("Medication");
+        builder.setContentTitle("Medicine - Trandolapril");
         builder.setContentText(content);
         builder.setSmallIcon(R.drawable.ic_add_alert_black_24dp);
         builder.setAutoCancel(true);

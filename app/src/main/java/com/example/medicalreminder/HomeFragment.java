@@ -88,10 +88,10 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
         // Inflate the layout for this fragment
         fragView = inflater.inflate(R.layout.fragment_home, container, false);
         this.mContext = getActivity();
-        //this.ns = new NotificationServices(mContext);
+        this.ns = new NotificationServices(mContext);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setTitle("Home");
-
-        //ns.scheduleNotification(ns.getNotification("test"), 5000);
+        //long test_time = LocalDateTime.now().atZone(ZoneId.systemDefault()).plusMinutes(1).toInstant().toEpochMilli();
+        //ns.scheduleNotification(ns.getNotification("Time to take pills"), 60000);
         OneLineCalendarView calendarView = (OneLineCalendarView) fragView.findViewById(R.id.calendar_view);
         recyclerView = fragView.findViewById(R.id.home_recycleView);
 
@@ -183,7 +183,7 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
                 if(reminders.size() > 1){
                     for (int i = 0; i < reminders.size(); i++){
                         Reminder tmprem = reminders.get(i);
-                        if (tmprem.getReminderId() != rem.getReminderId()){
+                        if (tmprem.getSequence() > rem.getSequence()){
                             LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(rem.getScheduleTime()),
                                     ZoneId.systemDefault()).plusHours(6);
                             tmprem.setScheduleTime(ZonedDateTime.of(newScheduleTime, ZoneId.systemDefault()).toInstant().toEpochMilli());
