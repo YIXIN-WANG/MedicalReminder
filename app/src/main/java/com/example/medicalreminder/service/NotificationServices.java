@@ -2,6 +2,7 @@ package com.example.medicalreminder.service;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -41,5 +42,10 @@ public class NotificationServices {
         builder.setAutoCancel(true);
         builder.setChannelId(NotificationPublisher.NOTIFICATION_CHANNEL_ID);//NotificationPublisher.NOTIFICATION_CHANNEL_ID
         return builder.build();
+    }
+
+    public void cancelNotification(int notificationId){
+        NotificationManager nMgr = (NotificationManager) mContext.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        nMgr.cancel(notificationId);
     }
 }
