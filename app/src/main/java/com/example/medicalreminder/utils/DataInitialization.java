@@ -9,6 +9,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -23,10 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class DataInitialization {
 
-    public static void initData(String userId){
+    public static void initData(String userId, Context context){
         String clinic_id = initClinics();
         String medId = initMedicine(clinic_id, userId);
-        initReminder(userId, medId);
+        initReminder(userId, medId, context);
     }
 
     private static String initClinics(){
@@ -100,7 +101,7 @@ public class DataInitialization {
         });
     }
 
-    private static void initReminder(String userId, String medicineId){
+    private static void initReminder(String userId, String medicineId, Context context){
         DatabaseReference remRef = FirebaseDatabase.getInstance().getReference("Reminder");
         LocalDateTime today = LocalDateTime.now();
         for(int i = 0; i < 8; i++){
@@ -111,6 +112,7 @@ public class DataInitialization {
             if(i == 0){
                 t1 = today.plusMinutes(2);
                 t2 = t1.plusHours(6);
+
                 //todo: Schedule notification here, use t1.
             }
             long scheduleTime1 = ZonedDateTime.of(t1, ZoneId.systemDefault()).toInstant().toEpochMilli();

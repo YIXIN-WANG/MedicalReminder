@@ -128,7 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     .setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    DataInitialization.initData(mAuth.getCurrentUser().getUid());
+                                    DataInitialization.initData(mAuth.getCurrentUser().getUid(), getApplicationContext());
                                     Helper.goToHomeView(RegisterActivity.this);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
