@@ -28,6 +28,7 @@ import com.example.medicalreminder.R;
 import com.example.medicalreminder.model.Reminder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -103,7 +104,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 List<Reminder> reminders = new ArrayList<>();
                 for(DataSnapshot clinicSnapshot : dataSnapshot.getChildren()){
                     Reminder rem = clinicSnapshot.getValue(Reminder.class);
-                    if(!rem.isTakenMed()){
+                    if(!rem.isTakenMed() && rem.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                         reminders.add(rem);
                     }
                 }
@@ -114,7 +115,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                     if(reminders.size() > 0){
                         Reminder nextReminder = reminders.get(0);
-                        LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextReminder.getScheduleTime()), ZoneId.systemDefault()).plusHours(6);
+                        LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(reminder.getTakeTime()), ZoneId.systemDefault()).plusHours(6);
                         nextReminder.setScheduleTime(ZonedDateTime.of(newScheduleTime, ZoneId.systemDefault()).toInstant().toEpochMilli());
                         setReminderValue(nextReminder);
                     }
