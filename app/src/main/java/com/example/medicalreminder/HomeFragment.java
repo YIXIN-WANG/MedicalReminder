@@ -27,6 +27,7 @@ import com.example.medicalreminder.service.MyFirebaseMessagingService;
 import com.example.medicalreminder.service.NotificationServices;
 import com.github.techisfun.onelinecalendar.DateSelectionListener;
 import com.github.techisfun.onelinecalendar.OneLineCalendarView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,6 +61,7 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
     private HomeItemListAdapter homeItemListAdapter;
     private DatabaseReference dbRemRef;
     private Context mContext;
+    private FirebaseAuth auth;
     private NotificationServices ns;
 
     public HomeFragment() {
@@ -88,6 +90,7 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
         // Inflate the layout for this fragment
         fragView = inflater.inflate(R.layout.fragment_home, container, false);
         this.mContext = getActivity();
+        auth = FirebaseAuth.getInstance();
         this.ns = new NotificationServices(mContext);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setTitle("Home");
         //long test_time = LocalDateTime.now().atZone(ZoneId.systemDefault()).plusMinutes(1).toInstant().toEpochMilli();
@@ -115,7 +118,9 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
                         remList.clear();
                         for(DataSnapshot clinicSnapshot : dataSnapshot.getChildren()){
                             Reminder rem = clinicSnapshot.getValue(Reminder.class);
-                            remList.add(rem);
+                            if(rem.getUserId().equals(auth.getCurrentUser().getUid())){
+                                remList.add(rem);
+                            }
                         }
                         homeItemListAdapter.notifyDataSetChanged();
                     }
@@ -165,40 +170,16 @@ public class HomeFragment extends Fragment implements HomeItemListAdapter.OnRemi
     }
 
     private void UpdateReminderTime(Reminder rem){
-        long startOfSelectDate = Instant.ofEpochMilli(rem.getScheduleTime()).atZone(ZoneId.systemDefault())
-                .toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        long endOfSelectDate = Instant.ofEpochMilli(rem.getScheduleTime()).atZone(ZoneId.systemDefault())
-                .toLocalDate().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(); //restricted to 1 day frame
-        Query query  = dbRemRef.orderByChild("scheduleTime").startAt(startOfSelectDate).endAt(endOfSelectDate);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Reminder> reminders = new ArrayList<>();
-                for(DataSnapshot clinicSnapshot : dataSnapshot.getChildren()){
-                    Reminder rem = clinicSnapshot.getValue(Reminder.class);
-                    if(!rem.isTakenMed()){
-                        reminders.add(rem);
-                    }
-                }
-                if(reminders.size() > 1){
-                    for (int i = 0; i < reminders.size(); i++){
-                        Reminder tmprem = reminders.get(i);
-                        if (tmprem.getSequence() > rem.getSequence()){
-                            LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(rem.getScheduleTime()),
-                                    ZoneId.systemDefault()).plusHours(6);
-                            tmprem.setScheduleTime(ZonedDateTime.of(newScheduleTime, ZoneId.systemDefault()).toInstant().toEpochMilli());
-                            setReminderValue(tmprem);
-                        }
-                    }
-                    query.removeEventListener(this);
-                    //homeItemListAdapter.notifyDataSetChanged();
-                }
+        LocalDateTime newScheduleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(rem.getScheduleTime()),
+                ZoneId.systemDefault());
+        for(int i = 0; i < remList.size(); i++){
+            Reminder nextRem = remList.get(i);
+            if (nextRem.getSequence() > rem.getSequence() && !nextRem.isTakenMed()){
+                newScheduleTime = newScheduleTime.plusHours(6);
+                nextRem.setScheduleTime(ZonedDateTime.of(newScheduleTime, ZoneId.systemDefault()).toInstant().toEpochMilli());
+                setReminderValue(nextRem);
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("Retrieve Clinics Error:",databaseError.getMessage());
-            }
-        });
+        }
     }
 
     private void setReminderValue(Reminder reminder){
