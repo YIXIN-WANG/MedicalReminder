@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import com.example.medicalreminder.model.Clinic;
 import com.example.medicalreminder.model.Medicine;
 import com.example.medicalreminder.model.Reminder;
+import com.example.medicalreminder.service.NotificationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -104,6 +105,7 @@ public class DataInitialization {
     private static void initReminder(String userId, String medicineId, Context context){
         DatabaseReference remRef = FirebaseDatabase.getInstance().getReference("Reminder");
         LocalDateTime today = LocalDateTime.now();
+        NotificationServices ns = new NotificationServices(context);
         for(int i = 0; i < 8; i++){
             String id1 = remRef.push().getKey();
             String id2 = remRef.push().getKey();
@@ -112,7 +114,7 @@ public class DataInitialization {
             if(i == 0){
                 t1 = today.plusMinutes(2);
                 t2 = t1.plusHours(6);
-
+                ns.scheduleNotification(ns.getNotification("Time to take pills!"), 120*1000);
                 //todo: Schedule notification here, use t1.
             }
             long scheduleTime1 = ZonedDateTime.of(t1, ZoneId.systemDefault()).toInstant().toEpochMilli();
