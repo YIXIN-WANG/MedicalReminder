@@ -12,5 +12,5 @@
     <item
         android:id="@+id/clinicFragment"
         android:icon="@drawable/ic_local_hospital_black_24dp"
-        android:title="Clinic" />
+        android:title="Pharmacy" />
 </menu>

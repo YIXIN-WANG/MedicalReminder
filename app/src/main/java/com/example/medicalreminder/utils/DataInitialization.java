@@ -36,7 +36,7 @@ public class DataInitialization {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot clinicSnapshot : dataSnapshot.getChildren()){
                     Clinic clinic = clinicSnapshot.getValue(Clinic.class);
-                    if(clinic.getPhoneNumber().equals("519-725-1514")){
+                    if(clinic.getPhoneNumber().equals("519-208-1348")){
                         String medId = initMedicine(clinic.getClinicId(), userId);
                         initReminder(userId, medId, context);
                     }

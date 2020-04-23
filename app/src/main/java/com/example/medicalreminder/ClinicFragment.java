@@ -48,7 +48,7 @@ public class ClinicFragment extends Fragment implements ClinicItemListAdapter.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_clinic, container, false);
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setTitle("Clinics");
+        ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setTitle("Pharmacy");
         recyclerView = view.findViewById(R.id.clinic_recycleView);
 
         recyclerView.setHasFixedSize(true);

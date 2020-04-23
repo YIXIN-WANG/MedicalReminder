@@ -45,11 +45,11 @@ public class ClinicItemListAdapter extends RecyclerView.Adapter<ClinicItemListAd
         holder.clinicAddressTextView.setText(clinicItem.getAddress());
         holder.clinicZipcodeTextView.setText(clinicItem.getZipCode());
         holder.openPhoneNumberButton.setText(clinicItem.getPhoneNumber());
-        if(clinicItem.getPhoneNumber().equals("519-725-1514")){
-            holder.clinicImageView.setImageResource(R.drawable.waterloo_clinic);
+        if(clinicItem.getPhoneNumber().equals("519-208-1348")){
+            holder.clinicImageView.setImageResource(R.drawable.pharmasave);
         }
         else{
-            holder.clinicImageView.setImageResource(R.drawable.westmount_place);
+            holder.clinicImageView.setImageResource(R.drawable.sobeys);
         }
 
         holder.openClinicDirectionButton.setOnClickListener(view -> {
